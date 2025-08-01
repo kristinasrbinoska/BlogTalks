@@ -6,26 +6,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlogTalks.Application.Comments.Queries
+namespace BlogTalks.Application.Comments.Comands
 {
-    public class GetCommentByIdHandler : IRequestHandler<GetCommentByIdRequest, GetCommentByIdResponse>
+    public class EditCommentHandler : IRequestHandler<EditCommentRequest, EditCommentResponse>
     {
         private readonly FakeDataStore _dataStore;
 
-        public GetCommentByIdHandler(FakeDataStore dataStore)
+        public EditCommentHandler(FakeDataStore dataStore)
         {
             _dataStore = dataStore;
         }
 
-        public async Task<GetCommentByIdResponse> Handle(GetCommentByIdRequest request, CancellationToken cancellationToken)
+        public async Task<EditCommentResponse> Handle(EditCommentRequest request, CancellationToken cancellationToken)
         {
-            var comment = await _dataStore.GetCommentById(request.id);
+            var comment = await _dataStore.GetCommentById(request.Comment.Id);
             if (comment == null)
             {
                 return null;
             }
+            comment.Text = request.Comment.Text;
+            comment.CreatedAt = DateTime.Now;
 
-            return new GetCommentByIdResponse
+            await _dataStore.UpdateComment(request.Comment.Id, comment);
+
+
+            return new EditCommentResponse
             {
                 Id = comment.Id,
                 Text = comment.Text,
@@ -34,6 +39,5 @@ namespace BlogTalks.Application.Comments.Queries
                 BlogPostId = comment.BlogPostId
             };
         }
-    
     }
 }

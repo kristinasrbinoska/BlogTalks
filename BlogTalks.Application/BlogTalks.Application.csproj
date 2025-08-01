@@ -11,12 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BlogPosts\Commands\" />
-    <Folder Include="BlogPosts\" />
-    <Folder Include="BlogPosts\Queries\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Comments\Comands\AddCommentRequest.cs" />
   </ItemGroup>
 

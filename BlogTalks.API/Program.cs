@@ -1,3 +1,5 @@
+using BlogTalks.Application.BlogPosts.Queries;
+using BlogTalks.Application.Comments.Comands;
 using BlogTalks.Application.Comments.Queries;
 using BlogTalks.Domain.DTOs;
 
@@ -13,6 +15,9 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
     cfg.RegisterServicesFromAssembly(typeof(GetCommentsResponse).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(EditCommentResponse).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(DeleteCommentResponse).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(GetBlogPostsResponse).Assembly);
 });
 builder.Services.AddSingleton<FakeDataStore>();
 

@@ -18,7 +18,7 @@ namespace BlogTalks.API.Controllers
             _mediator = mediator;
         }
 
-        //  GET: api/<CommentsController>
+        // GET api/<CommentsController>
         [HttpGet]
         public async Task<ActionResult> Get()
         {
@@ -26,50 +26,55 @@ namespace BlogTalks.API.Controllers
             return Ok(comments);
         }
 
-
-
         // GET api/<CommentsController>/5
         [HttpGet("{id}", Name = "GetCommentById")]
         public async Task<ActionResult> Get([FromRoute] GetCommentByIdRequest request)
         {
             var comment = await _mediator.Send(request);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
             return Ok(comment);
         }
 
+        // POST api/<CommentsController>
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] AddCommentResponse response)
         {
-            var commentToReturn = await _mediator.Send(new AddCommentCommand(response));
+            var commentToReturn = await _mediator.Send(new AddCommentRequest(response));
+            return Ok(commentToReturn);
 
-            return CreatedAtRoute("GetCommentById", new { id = commentToReturn.Id }, commentToReturn);
+          //  return CreatedAtRoute("GetCommentById", new { id = commentToReturn.Id }, commentToReturn);
         }
 
-        //[HttpPut("{id}")]
-        // public IActionResult Put(int id, [FromBody] CommentDTO dto)
-        // {
-        //     var comment = comments.FirstOrDefault(x => x.Id == id);
-        //     if (comment == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //     comment.Text = dto.Text;
-        //     comment.CreatedAt = dto.CreatedAt;
-        //     comment.CreatedBy = dto.CreatedBy;
-        //     comment.BlogPostId = dto.BlogPostId;
-
-        //     return Ok(comments);
-        // }
+        // PUT api/<CommentsController>/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] EditCommentResponse response)
+        {
+            var commentToReturn = await _mediator.Send(new EditCommentRequest(id, response));
+            if (commentToReturn == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
 
 
+        // DELETE api/<CommentsController>/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var commentToReturn = await _mediator.Send(new DeleteCommentRequest(id));
+            if (commentToReturn == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
 
-        // [HttpDelete("{id}")]
-        // public void Delete(int id)
-        // {
-        //     var comment = comments.FirstOrDefault(x => id == x.Id);
-        //     if (comment != null)
-        //     {
-        //         comments.Remove(comment);
-        //     }
-        // }
+        }
     }
+
+   
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.Comments.Comands
 {
-    public class AddCommentHandler : IRequestHandler<AddCommentCommand, AddCommentResponse>
+    public class AddCommentHandler : IRequestHandler<AddCommentRequest, AddCommentResponse>
     {
         private readonly FakeDataStore _dataStore;
 
@@ -18,7 +18,7 @@ namespace BlogTalks.Application.Comments.Comands
             _dataStore = dataStore;
         }
 
-        public async Task<AddCommentResponse> Handle(AddCommentCommand request, CancellationToken cancellationToken)
+        public async Task<AddCommentResponse> Handle(AddCommentRequest request, CancellationToken cancellationToken)
         {
            
             var commentDto = new CommentDTO
