@@ -32,7 +32,67 @@ namespace BlogTalks.Domain.DTOs
         {
             return await Task.FromResult(_comments);
         }
-        public async Task<CommentDTO> GetCommentById(int id) =>  await Task.FromResult(_comments.Single(p => p.Id == id));
+        public async Task<CommentDTO?> GetCommentById(int id) => await Task.FromResult(_comments.SingleOrDefault(p => p.Id == id));
+       
+        public async Task UpdateComment(int id, CommentDTO comment)
+        {
+           var existingComment = _comments.SingleOrDefault(x => x.Id == id);
+            if(existingComment != null)
+            {
+                existingComment.Text = comment.Text;
+                existingComment.CreatedAt = DateTime.Now;
+                existingComment.CreatedBy = comment.CreatedBy;
+                existingComment.BlogPostId = comment.BlogPostId;
+                existingComment.Id = comment.Id;
+            }
+            await Task.CompletedTask;
+        }
+        public async Task DeleteComment(int id)
+        {
+            var existingComment = _comments.SingleOrDefault(x => x.Id == id);
+            if (existingComment != null)
+            {
+                _comments.Remove(existingComment);
+            }
+            await Task.CompletedTask;
+        }
+        public async Task<IEnumerable<BlogPostDto>> GetAllBlogPosts()
+        {
+            return await Task.FromResult(_blogPosts);
+        }
+        public async Task<BlogPostDto?> GetBlogPostById(int id)
+        {
+            return await Task.FromResult(_blogPosts.SingleOrDefault(p => p.Id == id));
+        }
+        public async Task<BlogPostDto> AddBlogPost(BlogPostDto blogPost)
+        {
+            _blogPosts.Add(blogPost);
+            await Task.CompletedTask;
+            return blogPost;
+        }
+        public async Task UpdateBlogPost(int id,BlogPostDto dto)
+        {
+            var existingPost = _blogPosts.SingleOrDefault(x => x.Id == id);
+            if(existingPost != null)
+            {
+                existingPost.Title = dto.Title;
+                existingPost.Text = dto.Text;
+                existingPost.CreatedBy = dto.CreatedBy;
+                existingPost.Timestamp = DateTime.Now;
+                existingPost.Tags = dto.Tags;
+                existingPost.Comments = dto.Comments;
+            }
+            await Task.CompletedTask;
+        }
+        public async Task DeleteBlogPost(int id)
+        {
+           var blogPost = _blogPosts.SingleOrDefault(x => x.Id == id);
+            if(blogPost != null)
+            {
+                _blogPosts.Remove(blogPost);
+            }
+            await Task.CompletedTask;
+        }
 
     }
 }
