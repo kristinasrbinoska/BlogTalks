@@ -60,6 +60,7 @@ namespace BlogTalks.Domain.DTOs
         {
             return await Task.FromResult(comments);
         }
+        
         public async Task<BlogPostDto?> GetBlogPostById(int id)
         {
             return await Task.FromResult(comments.SingleOrDefault(p => p.Id == id));
