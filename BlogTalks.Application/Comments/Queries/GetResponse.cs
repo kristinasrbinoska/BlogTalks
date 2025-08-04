@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.Comments.Queries
 {
-    public class GetCommentsResponse
+    public class GetResponse
     {
         public int Id { get; set; }
         public required string Text { get; set; }

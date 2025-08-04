@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.Comments.Queries
 {
-    public class GetCommentByIdHandler : IRequestHandler<GetCommentByIdRequest, GetCommentByIdResponse>
+    public class GetByIdHandler : IRequestHandler<GetCommentByIdRequest, GetCommentByIdResponse>
     {
         private readonly FakeDataStore _dataStore;
 
-        public GetCommentByIdHandler(FakeDataStore dataStore)
+        public GetByIdHandler(FakeDataStore dataStore)
         {
             _dataStore = dataStore;
         }
@@ -20,6 +20,10 @@ namespace BlogTalks.Application.Comments.Queries
         public async Task<GetCommentByIdResponse> Handle(GetCommentByIdRequest request, CancellationToken cancellationToken)
         {
             var comment = await _dataStore.GetCommentById(request.id);
+            if (comment == null)
+            {
+                return null;
+            }
 
             return new GetCommentByIdResponse
             {
