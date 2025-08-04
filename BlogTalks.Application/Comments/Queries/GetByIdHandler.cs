@@ -6,33 +6,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlogTalks.Application.Comments.Comands
+namespace BlogTalks.Application.Comments.Queries
 {
-    public class DeleteCommentHandler : IRequestHandler<DeleteCommentRequest, DeleteCommentResponse>
+    public class GetByIdHandler : IRequestHandler<GetCommentByIdRequest, GetCommentByIdResponse>
     {
         private readonly FakeDataStore _dataStore;
 
-        public DeleteCommentHandler(FakeDataStore dataStore)
+        public GetByIdHandler(FakeDataStore dataStore)
         {
             _dataStore = dataStore;
         }
 
-        public async Task<DeleteCommentResponse> Handle(DeleteCommentRequest request, CancellationToken cancellationToken)
+        public async Task<GetCommentByIdResponse> Handle(GetCommentByIdRequest request, CancellationToken cancellationToken)
         {
             var comment = await _dataStore.GetCommentById(request.id);
             if (comment == null)
             {
                 return null;
             }
-            await _dataStore.DeleteComment(request.id);
-            return new DeleteCommentResponse
+
+            return new GetCommentByIdResponse
             {
-                Id = request.id,
+                Id = comment.Id,
                 Text = comment.Text,
                 CreatedAt = comment.CreatedAt,
                 CreatedBy = comment.CreatedBy,
                 BlogPostId = comment.BlogPostId
             };
         }
+    
     }
 }

@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.BlogPosts.Commands
 {
-    public record EditBlogPostRequest(int id,EditBlogPostResponse BlogPost) : IRequest<EditBlogPostResponse>;
+    public record EditRequest(int id,EditBlogPostResponse BlogPost) : IRequest<EditBlogPostResponse>;
 
 }

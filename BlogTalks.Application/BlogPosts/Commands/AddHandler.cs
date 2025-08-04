@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.BlogPosts.Commands
 {
-    public class AddBlogPostHandler : IRequestHandler<AddBlogPostRequest, AddBlogPostResponse>
+    public class AddBlogPostHandler : IRequestHandler<AddRequest, AddResponse>
     {
         private readonly FakeDataStore _dataStore;
 
@@ -17,7 +17,7 @@ namespace BlogTalks.Application.BlogPosts.Commands
             _dataStore = dataStore;
         }
 
-        public async Task<AddBlogPostResponse> Handle(AddBlogPostRequest request, CancellationToken cancellationToken)
+        public async Task<AddResponse> Handle(AddRequest request, CancellationToken cancellationToken)
         {
             var blogPostDto = new BlogPostDto
             {

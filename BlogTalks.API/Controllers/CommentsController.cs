@@ -22,7 +22,7 @@ namespace BlogTalks.API.Controllers
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            var comments = await _mediator.Send(new GetCommentsRequest());
+            var comments = await _mediator.Send(new GetRequest());
             return Ok(comments);
         }
 
@@ -38,12 +38,26 @@ namespace BlogTalks.API.Controllers
 
             return Ok(comment);
         }
+        // GET api/<CommentsController>/5
+
+        [HttpGet("/blogPosts/{blogPostId}/comments", Name = "GetByBlogPostId")]
+        public async Task<ActionResult> Get([FromRoute] GetByBlogPostIdRequest request)
+        {
+            var comment = await _mediator.Send(request);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(comment);
+        }
+
 
         // POST api/<CommentsController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] AddCommentResponse response)
+        public async Task<ActionResult> Post([FromBody] AddResponse response)
         {
-            var commentToReturn = await _mediator.Send(new AddCommentRequest(response));
+            var commentToReturn = await _mediator.Send(new AddRequest(response));
             return Ok(commentToReturn);
 
           //  return CreatedAtRoute("GetCommentById", new { id = commentToReturn.Id }, commentToReturn);
@@ -51,9 +65,9 @@ namespace BlogTalks.API.Controllers
 
         // PUT api/<CommentsController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] EditCommentResponse response)
+        public async Task<IActionResult> Put(int id, [FromBody] EditResponse response)
         {
-            var commentToReturn = await _mediator.Send(new EditCommentRequest(id, response));
+            var commentToReturn = await _mediator.Send(new EditRequest(id, response));
             if (commentToReturn == null)
             {
                 return NotFound();
@@ -66,7 +80,7 @@ namespace BlogTalks.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var commentToReturn = await _mediator.Send(new DeleteCommentRequest(id));
+            var commentToReturn = await _mediator.Send(new DeleteRequest(id));
             if (commentToReturn == null)
             {
                 return NotFound();

@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.Comments.Comands
 {
-    public class AddCommentHandler : IRequestHandler<AddCommentRequest, AddCommentResponse>
+    public class AddHandler : IRequestHandler<AddRequest, AddResponse>
     {
         private readonly FakeDataStore _dataStore;
 
-        public AddCommentHandler(FakeDataStore dataStore)
+        public AddHandler(FakeDataStore dataStore)
         {
             _dataStore = dataStore;
         }
 
-        public async Task<AddCommentResponse> Handle(AddCommentRequest request, CancellationToken cancellationToken)
+        public async Task<AddResponse> Handle(AddRequest request, CancellationToken cancellationToken)
         {
            
             var commentDto = new CommentDTO

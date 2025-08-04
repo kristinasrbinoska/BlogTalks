@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.Comments.Comands
 {
-    public class EditCommentHandler : IRequestHandler<EditCommentRequest, EditCommentResponse>
+    public class EditHandler : IRequestHandler<EditRequest, EditResponse>
     {
         private readonly FakeDataStore _dataStore;
 
-        public EditCommentHandler(FakeDataStore dataStore)
+        public EditHandler(FakeDataStore dataStore)
         {
             _dataStore = dataStore;
         }
 
-        public async Task<EditCommentResponse> Handle(EditCommentRequest request, CancellationToken cancellationToken)
+        public async Task<EditResponse> Handle(EditRequest request, CancellationToken cancellationToken)
         {
             var comment = await _dataStore.GetCommentById(request.Comment.Id);
             if (comment == null)
@@ -30,7 +30,7 @@ namespace BlogTalks.Application.Comments.Comands
             await _dataStore.UpdateComment(request.Comment.Id, comment);
 
 
-            return new EditCommentResponse
+            return new EditResponse
             {
                 Id = comment.Id,
                 Text = comment.Text,

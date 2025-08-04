@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.BlogPosts.Commands
 {
-    public class DeleteBlogPostHandler : IRequestHandler<DeleteBlogPostRequest, DeleteBlogPostResponse>
+    public class DeleteBlogPostHandler : IRequestHandler<DeleteRequest, DeleteResponse>
     {
         private readonly FakeDataStore _dataStore;
 
@@ -17,7 +17,7 @@ namespace BlogTalks.Application.BlogPosts.Commands
             _dataStore = dataStore;
         }
 
-        public async Task<DeleteBlogPostResponse> Handle(DeleteBlogPostRequest request, CancellationToken cancellationToken)
+        public async Task<DeleteResponse> Handle(DeleteRequest request, CancellationToken cancellationToken)
         {
             var blogPost = await _dataStore.GetBlogPostById(request.id);
             if (blogPost == null)
@@ -25,7 +25,7 @@ namespace BlogTalks.Application.BlogPosts.Commands
                 return null;
             }
             _dataStore.DeleteBlogPost(request.id);
-            return new DeleteBlogPostResponse
+            return new DeleteResponse
             {
                 Id = request.id,
                 Title = blogPost.Title,

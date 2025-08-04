@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.Comments.Comands
 {
-    public record EditCommentRequest(int id,EditCommentResponse Comment) : IRequest<EditCommentResponse>;
+    public record EditRequest(int id,EditResponse Comment) : IRequest<EditResponse>;
 
 }

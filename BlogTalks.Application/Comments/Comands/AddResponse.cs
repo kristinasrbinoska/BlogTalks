@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.Comments.Comands
 {
-    public class EditCommentResponse
+    public class AddResponse
     {
         public int Id { get; set; }
         public required string Text { get; set; }

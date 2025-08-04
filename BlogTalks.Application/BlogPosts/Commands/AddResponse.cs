@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlogTalks.Application.BlogPosts.Queries
+namespace BlogTalks.Application.BlogPosts.Commands
 {
-    public class GetBlogPostByIdResponse
+    public class AddResponse
     {
         public int Id { get; set; }
         public required string Title { get; set; }
@@ -16,6 +16,6 @@ namespace BlogTalks.Application.BlogPosts.Queries
         public int CreatedBy { get; set; }
         public DateTime Timestamp { get; set; }
         public List<string> Tags { get; set; } = new List<string>();
-        public List<GetCommentsResponse> Comments { get; set; } = new List<GetCommentsResponse>();
+        public List<GetResponse> Comments { get; set; } = new List<GetResponse>();
     }
 }

@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Comments\Comands\AddCommentRequest.cs" />
+    <None Include="Comments\Comands\AddRequest.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.BlogPosts.Commands
 {
-    public class EditBlogPostHandler : IRequestHandler<EditBlogPostRequest, EditBlogPostResponse>
+    public class EditHandler : IRequestHandler<EditRequest, EditBlogPostResponse>
     {
         private readonly FakeDataStore _dataStore;
-        public EditBlogPostHandler(FakeDataStore dataStore)
+        public EditHandler(FakeDataStore dataStore)
             {
                 _dataStore = dataStore;
             }
-        public async Task<EditBlogPostResponse> Handle(EditBlogPostRequest request, CancellationToken cancellationToken)
+        public async Task<EditBlogPostResponse> Handle(EditRequest request, CancellationToken cancellationToken)
         {
             var blogPost = await _dataStore.GetBlogPostById(request.BlogPost.Id);
 
@@ -39,13 +39,13 @@ namespace BlogTalks.Application.BlogPosts.Commands
                 CreatedBy = blogPost.CreatedBy,
                 Timestamp = blogPost.Timestamp,
                 Tags = blogPost.Tags,
-                Comments = blogPost.Comments?.Select(c => new GetCommentsResponse
+                Comments = blogPost.Comments?.Select(c => new GetResponse
                 {
                     Id = c.Id,
                     Text = c.Text,
                     CreatedBy = c.CreatedBy,
                     CreatedAt = c.CreatedAt
-                }).ToList() ?? new List<GetCommentsResponse>()
+                }).ToList() ?? new List<GetResponse>()
             };
         }
     }

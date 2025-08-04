@@ -9,15 +9,15 @@ namespace BlogTalks.Domain.DTOs
     public class FakeDataStore
     {
         private static List<CommentDTO> _comments;
-        private static List<BlogPostDto> _blogPosts;
+        private static List<BlogPostDto> comments;
         public FakeDataStore()
         {
             _comments = new List<CommentDTO>
             {
-                new CommentDTO { Id = 1, Text = "This is the first comment", CreatedAt = DateTime.Now, CreatedBy = 1 },
-                new CommentDTO { Id = 2, Text = "This is the second comment", CreatedAt = DateTime.Now, CreatedBy = 2 }
+                new CommentDTO { Id = 1, Text = "This is the first comment", CreatedAt = DateTime.Now, CreatedBy = 1, BlogPostId = 1 },
+                new CommentDTO { Id = 2, Text = "This is the second comment", CreatedAt = DateTime.Now, CreatedBy = 2, BlogPostId =  1}
             };
-            _blogPosts = new List<BlogPostDto>
+            comments = new List<BlogPostDto>
             {
                 new BlogPostDto { Id = 1, Title = "First Post", Text = "This is the first post", CreatedBy = 1, Timestamp = DateTime.Now, Tags = new List<string> { "tag1", "tag2" }, Comments = _comments },
                 new BlogPostDto { Id = 2, Title = "Second Post", Text = "This is the second post", CreatedBy = 2, Timestamp = DateTime.Now, Tags = new List<string> { "tag3" }, Comments = _comments }
@@ -58,21 +58,27 @@ namespace BlogTalks.Domain.DTOs
         }
         public async Task<IEnumerable<BlogPostDto>> GetAllBlogPosts()
         {
-            return await Task.FromResult(_blogPosts);
+            return await Task.FromResult(comments);
         }
         public async Task<BlogPostDto?> GetBlogPostById(int id)
         {
-            return await Task.FromResult(_blogPosts.SingleOrDefault(p => p.Id == id));
+            return await Task.FromResult(comments.SingleOrDefault(p => p.Id == id));
+        }
+        public async Task<IEnumerable<CommentDTO>> GetByBlogPostId(int blogPostId)
+        {
+           
+            return await Task.FromResult(_comments.Where(p => p.BlogPostId == blogPostId));
+            
         }
         public async Task<BlogPostDto> AddBlogPost(BlogPostDto blogPost)
         {
-            _blogPosts.Add(blogPost);
+            comments.Add(blogPost);
             await Task.CompletedTask;
             return blogPost;
         }
         public async Task UpdateBlogPost(int id,BlogPostDto dto)
         {
-            var existingPost = _blogPosts.SingleOrDefault(x => x.Id == id);
+            var existingPost = comments.SingleOrDefault(x => x.Id == id);
             if(existingPost != null)
             {
                 existingPost.Title = dto.Title;
@@ -86,10 +92,10 @@ namespace BlogTalks.Domain.DTOs
         }
         public async Task DeleteBlogPost(int id)
         {
-           var blogPost = _blogPosts.SingleOrDefault(x => x.Id == id);
+           var blogPost = comments.SingleOrDefault(x => x.Id == id);
             if(blogPost != null)
             {
-                _blogPosts.Remove(blogPost);
+                comments.Remove(blogPost);
             }
             await Task.CompletedTask;
         }

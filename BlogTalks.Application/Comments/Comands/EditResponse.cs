@@ -1,14 +1,12 @@
-﻿using BlogTalks.Domain.DTOs;
-using MediatR;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlogTalks.Application.Comments.Queries
+namespace BlogTalks.Application.Comments.Comands
 {
-    public class GetCommentsResponse
+    public class EditResponse
     {
         public int Id { get; set; }
         public required string Text { get; set; }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.BlogPosts.Queries
 {
-    public class GetBlogPostsResponse
+    public class GetResponse
     {
         public int Id { get; set; }
         public required string Title { get; set; }
@@ -17,6 +17,6 @@ namespace BlogTalks.Application.BlogPosts.Queries
         public int CreatedBy { get; set; }
         public DateTime Timestamp { get; set; }
         public List<string> Tags { get; set; } = new List<string>();
-        public List<GetCommentsResponse> Comments { get; set; } = new List<GetCommentsResponse>();
+        public List<CommentDTO> Comments { get; set; } = new List<CommentDTO>();
     }
 }

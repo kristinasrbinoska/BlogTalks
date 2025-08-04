@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlogTalks.Application.Comments.Comands
+namespace BlogTalks.Application.Comments.Queries
 {
-    public class AddCommentResponse
+    public class GetByBlogPostIdResponse
     {
         public int Id { get; set; }
         public required string Text { get; set; }

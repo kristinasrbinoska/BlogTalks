@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlogTalks.Application.BlogPosts.Commands
+namespace BlogTalks.Application.Comments.Comands
 {
-    public record DeleteBlogPostRequest(int id) : IRequest<DeleteBlogPostResponse>;
+    public record DeleteRequest(int id) : IRequest<DeleteResponse>;
 
 }

@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.BlogPosts.Commands
 {
-    public record AddBlogPostRequest(AddBlogPostResponse BlogPost) : IRequest<AddBlogPostResponse>;
+    public record AddRequest(AddResponse BlogPost) : IRequest<AddResponse>;
 }

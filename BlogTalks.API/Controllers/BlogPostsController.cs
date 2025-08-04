@@ -24,13 +24,13 @@ namespace BlogTalks.API.Controllers
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            var blogPosts = await _mediator.Send(new GetBlogPostsRequest());
+            var blogPosts = await _mediator.Send(new GetRequest());
             return Ok(blogPosts);
         }
 
         // GET api/<BlogPostsController>/5
         [HttpGet("{id}",Name = "GetBlogPostById")]
-        public async Task<ActionResult> Get([FromRoute] GetBlogPostByIdRequest request )
+        public async Task<ActionResult> Get([FromRoute] GetByIdRequest request )
         {
             var blogPost = await _mediator.Send(request);
             if (blogPost == null)
@@ -44,9 +44,9 @@ namespace BlogTalks.API.Controllers
 
         // POST api/<BlogPostsController>
         [HttpPost]
-        public async Task<ActionResult> Add([FromBody] AddBlogPostResponse response)
+        public async Task<ActionResult> Add([FromBody] AddResponse response)
         {
-            var blogPosts = await _mediator.Send(new AddBlogPostRequest(response));
+            var blogPosts = await _mediator.Send(new AddRequest(response));
             return CreatedAtRoute("GetBlogPostById", new { id = blogPosts.Id }, blogPosts); ;
         }
 
@@ -54,24 +54,24 @@ namespace BlogTalks.API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] EditBlogPostResponse response)
         {
-            var blogPosts = await _mediator.Send(new EditBlogPostRequest(id,response));
+            var blogPosts = await _mediator.Send(new EditRequest(id,response));
             if (blogPosts == null)
             {
                 return NotFound();
             }
-            return Ok(blogPosts);
+            return NoContent();
         }
 
         // DELETE api/<BlogPostsController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var blogPosts = await _mediator.Send(new DeleteBlogPostRequest(id));
+            var blogPosts = await _mediator.Send(new DeleteRequest(id));
             if (blogPosts == null)
             {
                 return NotFound();
             }
-            return Ok(blogPosts);
+            return NoContent();
         }
     }
 
