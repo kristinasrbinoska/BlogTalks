@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlogTalks.Domain.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +7,15 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Domain.Entities
 {
-    public class Comment
+    public class Comment : IEntity
     {
-        private Guid Id { get; set; }
-        private string Text { get; set; }
-        private User CreatedBy { get; set; }
-        private DateTime Timestamp { get; set; }
-        private BlogPost BlogPost { get; set; }
-        private Guid BlogPostId { get; set; }
+        public int Id { get; set; }
+        public string Text { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public int CreatedBy { get; set; }
+
+        //Navigation 
+        public int BlogPostId { get; set; }
+        public BlogPost BlogPost { get; set; } = new BlogPost();
     }
 }
