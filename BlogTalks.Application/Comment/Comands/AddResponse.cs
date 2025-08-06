@@ -6,12 +6,5 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.Comments.Comands
 {
-    public class AddResponse
-    {
-        public int Id { get; set; }
-        public required string Text { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public int CreatedBy { get; set; }
-        public int BlogPostId { get; set; }
-    }
+    public record AddResponse(int Id);
 }

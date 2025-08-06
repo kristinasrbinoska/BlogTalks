@@ -44,17 +44,22 @@ namespace BlogTalks.API.Controllers
 
         // POST api/<BlogPostsController>
         [HttpPost]
-        public async Task<ActionResult> Add([FromBody] AddResponse response)
+        public async Task<ActionResult> Add([FromBody] AddRequest request)
         {
-            var blogPosts = await _mediator.Send(new AddRequest(response));
-            return CreatedAtRoute("GetBlogPostById", new { id = blogPosts.Id }, blogPosts); ;
+            var blogPosts = await _mediator.Send(request);
+            if (blogPosts == null)
+            {
+                return NotFound();
+            }
+            return Ok(blogPosts);
+         //   return CreatedAtRoute("GetBlogPostById", new { id = blogPosts.Id }, blogPosts); ;
         }
 
         // PUT api/<BlogPostsController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, [FromBody] EditBlogPostResponse response)
+        public async Task<ActionResult> Put([FromRoute]int id, [FromBody] EditRequest request)
         {
-            var blogPosts = await _mediator.Send(new EditRequest(id,response));
+            var blogPosts = await _mediator.Send(new EditRequest(id, request.Title, request.Text, request.Tags));
             if (blogPosts == null)
             {
                 return NotFound();

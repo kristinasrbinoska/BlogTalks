@@ -1,5 +1,6 @@
 ﻿using BlogTalks.Application.Comments.Queries;
 using BlogTalks.Domain.DTOs;
+using BlogTalks.Domain.Reposotories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,42 +12,38 @@ namespace BlogTalks.Application.BlogPosts.Commands
 {
     public class EditHandler : IRequestHandler<EditRequest, EditBlogPostResponse>
     {
-        private readonly FakeDataStore _dataStore;
-        public EditHandler(FakeDataStore dataStore)
-            {
-                _dataStore = dataStore;
-            }
-        public async Task<EditBlogPostResponse> Handle(EditRequest request, CancellationToken cancellationToken)
+        private readonly IBlogPostRepository _blogPostRepository;
+
+        public EditHandler(IBlogPostRepository blogPostRepository)
         {
-            var blogPost = await _dataStore.GetBlogPostById(request.BlogPost.Id);
+            _blogPostRepository = blogPostRepository;
+        }
+
+        public Task<EditBlogPostResponse> Handle(EditRequest request, CancellationToken cancellationToken)
+        {
+            var blogPost =_blogPostRepository.GetById(request.Id);
 
             if (blogPost == null)
             {
                 return null;
             }
-            blogPost.Title = request.BlogPost.Title;
-            blogPost.Text = request.BlogPost.Text;
-            blogPost.Timestamp = DateTime.Now;
+            blogPost.Title = request.Title;
+            blogPost.Text = request.Text;
+            blogPost.CreatedAt = DateTime.UtcNow;
 
-            await _dataStore.UpdateBlogPost(request.BlogPost.Id, blogPost);
 
-            
-            return new EditBlogPostResponse
+            _blogPostRepository.Update(blogPost);
+
+
+            return Task.FromResult(new EditBlogPostResponse
             {
                 Id = blogPost.Id,
                 Title = blogPost.Title,
                 Text = blogPost.Text,
                 CreatedBy = blogPost.CreatedBy,
-                Timestamp = blogPost.Timestamp,
+                Timestamp = DateTime.UtcNow,
                 Tags = blogPost.Tags,
-                Comments = blogPost.Comments?.Select(c => new GetResponse
-                {
-                    Id = c.Id,
-                    Text = c.Text,
-                    CreatedBy = c.CreatedBy,
-                    CreatedAt = c.CreatedAt
-                }).ToList() ?? new List<GetResponse>()
-            };
+            });
         }
     }
 }

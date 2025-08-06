@@ -1,4 +1,5 @@
 ﻿using BlogTalks.Domain.DTOs;
+using BlogTalks.Domain.Reposotories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,38 +11,27 @@ namespace BlogTalks.Application.BlogPosts.Commands
 {
     public class AddBlogPostHandler : IRequestHandler<AddRequest, AddResponse>
     {
-        private readonly FakeDataStore _dataStore;
+        private readonly IBlogPostRepository _blogPostRepository;
 
-        public AddBlogPostHandler(FakeDataStore dataStore)
+        public AddBlogPostHandler(IBlogPostRepository blogPostRepository)
         {
-            _dataStore = dataStore;
+            _blogPostRepository = blogPostRepository;
         }
 
         public async Task<AddResponse> Handle(AddRequest request, CancellationToken cancellationToken)
         {
-            var blogPostDto = new BlogPostDto
+            var blogPost = new Domain.Entities.BlogPost
             {
-                Id = request.BlogPost.Id,
-                Title = request.BlogPost.Title,
-                Text = request.BlogPost.Text,
-                CreatedBy = request.BlogPost.CreatedBy,
-                Timestamp = request.BlogPost.Timestamp,
-                Tags = request.BlogPost.Tags,
-                Comments = request.BlogPost.Comments
-                    .Select(c => new CommentDTO
-                    {
-                        Id = c.Id,
-                        Text = c.Text,
-                        CreatedAt = c.CreatedAt,
-                        CreatedBy = c.CreatedBy,
-                        BlogPostId = c.BlogPostId
-                    })
-                    .ToList()
+                Title = request.Title,
+                Text = request.Text,
+                CreatedBy = 5,
+                CreatedAt = DateTime.UtcNow,
+                Tags = request.Tags,
             };
 
-            var addedBlogPost = await _dataStore.AddBlogPost(blogPostDto);
+             _blogPostRepository.Add(blogPost);
 
-            return request.BlogPost;
+            return new AddResponse(blogPost.Id);
         }
 
 

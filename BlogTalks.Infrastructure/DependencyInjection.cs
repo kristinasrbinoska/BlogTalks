@@ -1,14 +1,10 @@
-﻿using BlogTalks.Infrastructure.Data.DataContext;
+﻿using BlogTalks.Domain.Reposotories;
+using BlogTalks.Infrastructure.Data.DataContext;
+using BlogTalks.Infrastructure.Reposotories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlogTalks.Infrastructure
 {
@@ -24,8 +20,9 @@ namespace BlogTalks.Infrastructure
                 npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Default)));
 
             services.AddDbContext<ApplicationDbContext>();
-
-            //TO DO add repos
+            
+            services.AddTransient<IBlogPostRepository, BlogPostRepository>();
+            services.AddTransient<ICommentRepository, CommentRepository>();
             return services;
         }
     }

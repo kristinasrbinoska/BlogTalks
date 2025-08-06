@@ -18,12 +18,10 @@ builder.Services.AddSwaggerGen(options =>
     options.CustomSchemaIds(type => type.FullName);
 });
 builder.Services
-    .AddPresentation()
-    .AddApplication()
-    .AddInfrastructure(builder.Configuration);
-builder.Services.AddSingleton<FakeDataStore>();
-
-
+        .AddPresentation()
+        .AddApplication()
+        .AddInfrastructure(builder.Configuration);
+// Use the fully qualified name to resolve the a
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

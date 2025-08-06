@@ -1,4 +1,5 @@
 ﻿using BlogTalks.Domain.DTOs;
+using BlogTalks.Domain.Reposotories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,25 +11,40 @@ namespace BlogTalks.Application.Comments.Queries
 {
     public class GetByBlogPostIdHandler : IRequestHandler<GetByBlogPostIdRequest, IEnumerable<GetByBlogPostIdResponse>>
     {
-        private readonly FakeDataStore _dataStore;
+        private readonly ICommentRepository _commentRepository;
+        private readonly IBlogPostRepository _blogPostRepository;
 
-        public GetByBlogPostIdHandler(FakeDataStore dataStore)
+
+        public GetByBlogPostIdHandler(ICommentRepository commentRepository, IBlogPostRepository blogPostRepository)
         {
-            _dataStore = dataStore;
+            _commentRepository = commentRepository;
+            _blogPostRepository = blogPostRepository;
         }
 
         public async Task<IEnumerable<GetByBlogPostIdResponse>> Handle(GetByBlogPostIdRequest request, CancellationToken cancellationToken)
-        {
-            var comments = await _dataStore.GetByBlogPostId(request.blogPostId);
+        {  
+            var blogPost = _blogPostRepository.GetById(request.blogPostId);
+            if (blogPost == null)
+                return null;
 
-            return comments.Select(c => new GetByBlogPostIdResponse
+            var list = _commentRepository.GetByBlogPostId(request.blogPostId);
+
+            
+            var getAllResponseList = new List<GetByBlogPostIdResponse>();
+            foreach (var item in list)
             {
-                Id = c.Id,
-                Text = c.Text,
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = c.CreatedBy,
-                BlogPostId = c.BlogPostId,
-            });
+                var response = new GetByBlogPostIdResponse
+                {
+                    Id = item.Id,
+                    Text = item.Text,
+                 //   CreatorName = "XXX", // not implemted yet, TODO
+                    CreatedAt = item.CreatedAt,
+                    CreatedBy = item.CreatedBy,
+                };
+                getAllResponseList.Add(response);
+            }
+
+            return getAllResponseList;
         }
     }
 }

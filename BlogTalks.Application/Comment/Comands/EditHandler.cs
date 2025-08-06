@@ -1,4 +1,5 @@
 ﻿using BlogTalks.Domain.DTOs;
+using BlogTalks.Domain.Reposotories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,34 +11,35 @@ namespace BlogTalks.Application.Comments.Comands
 {
     public class EditHandler : IRequestHandler<EditRequest, EditResponse>
     {
-        private readonly FakeDataStore _dataStore;
+        private readonly ICommentRepository _commentRepository;
 
-        public EditHandler(FakeDataStore dataStore)
+        public EditHandler(ICommentRepository commentRepository)
         {
-            _dataStore = dataStore;
+            _commentRepository = commentRepository;
         }
 
-        public async Task<EditResponse> Handle(EditRequest request, CancellationToken cancellationToken)
+        public Task<EditResponse> Handle(EditRequest request, CancellationToken cancellationToken)
         {
-            var comment = await _dataStore.GetCommentById(request.Comment.Id);
+            var comment =  _commentRepository.GetById(request.id);
             if (comment == null)
             {
                 return null;
             }
-            comment.Text = request.Comment.Text;
-            comment.CreatedAt = DateTime.Now;
+            comment.Text = request.Text;
+            comment.CreatedAt = DateTime.UtcNow;
+            
 
-            await _dataStore.UpdateComment(request.Comment.Id, comment);
+            _commentRepository.Update(comment);
 
 
-            return new EditResponse
+            return Task.FromResult(new EditResponse
             {
                 Id = comment.Id,
                 Text = comment.Text,
-                CreatedAt = comment.CreatedAt,
+                CreatedAt = DateTime.UtcNow,
                 CreatedBy = comment.CreatedBy,
                 BlogPostId = comment.BlogPostId
-            };
+            });
         }
     }
 }

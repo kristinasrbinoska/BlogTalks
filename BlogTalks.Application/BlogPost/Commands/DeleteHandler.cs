@@ -1,4 +1,5 @@
 ﻿using BlogTalks.Domain.DTOs;
+using BlogTalks.Domain.Reposotories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,29 +11,29 @@ namespace BlogTalks.Application.BlogPosts.Commands
 {
     public class DeleteBlogPostHandler : IRequestHandler<DeleteRequest, DeleteResponse>
     {
-        private readonly FakeDataStore _dataStore;
+        private readonly IBlogPostRepository _blogPostRepository;
 
-        public DeleteBlogPostHandler(FakeDataStore dataStore)
+        public DeleteBlogPostHandler(IBlogPostRepository blogPostRepository)
         {
-            _dataStore = dataStore;
+            _blogPostRepository = blogPostRepository;
         }
 
-        public async Task<DeleteResponse> Handle(DeleteRequest request, CancellationToken cancellationToken)
+        public Task<DeleteResponse> Handle(DeleteRequest request, CancellationToken cancellationToken)
         {
-            var blogPost = await _dataStore.GetBlogPostById(request.id);
+            var blogPost = _blogPostRepository.GetById(request.id);
             if (blogPost == null)
             {
                 return null;
             }
-            _dataStore.DeleteBlogPost(request.id);
-            return new DeleteResponse
+            _blogPostRepository.Delete(blogPost);
+            return Task.FromResult(new DeleteResponse
             {
                 Id = request.id,
                 Title = blogPost.Title,
                 Text = blogPost.Text,
-                Timestamp = blogPost.Timestamp,
+                Timestamp = blogPost.CreatedAt,
                 CreatedBy = blogPost.CreatedBy
-            };
+            });
         }
     }
 }

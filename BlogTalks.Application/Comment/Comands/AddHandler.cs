@@ -1,5 +1,7 @@
 ﻿using BlogTalks.Application.Comments.Queries;
 using BlogTalks.Domain.DTOs;
+using BlogTalks.Domain.Entities;
+using BlogTalks.Domain.Reposotories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,28 +13,37 @@ namespace BlogTalks.Application.Comments.Comands
 {
     public class AddHandler : IRequestHandler<AddRequest, AddResponse>
     {
-        private readonly FakeDataStore _dataStore;
+        private readonly ICommentRepository _commentRepository;
+        private readonly IBlogPostRepository _blogPostRepository;
 
-        public AddHandler(FakeDataStore dataStore)
+        public AddHandler(ICommentRepository commentRepository, IBlogPostRepository blogPostRepository)
         {
-            _dataStore = dataStore;
+            _commentRepository = commentRepository;
+            _blogPostRepository = blogPostRepository;
         }
 
         public async Task<AddResponse> Handle(AddRequest request, CancellationToken cancellationToken)
         {
-           
-            var commentDto = new CommentDTO
+            var blogPost = _blogPostRepository.GetById(request.BlogPostId);
+            if(blogPost == null)
             {
-                Id = request.Comment.Id,
-                Text = request.Comment.Text,
-                CreatedAt = request.Comment.CreatedAt,
-                CreatedBy = request.Comment.CreatedBy,
-                BlogPostId = request.Comment.BlogPostId
+                return null; 
+            }
+
+            var comment = new Comment
+            {
+                Text = request.Text,
+                CreatedBy = 5,
+                CreatedAt = DateTime.UtcNow,
+                BlogPostId = request.BlogPostId,
+                BlogPost = blogPost
             };
 
-            await _dataStore.AddComment(commentDto);
+            
+            _commentRepository.Add(comment);
 
-            return request.Comment;
+
+            return new AddResponse(comment.Id);
         }
 
     }

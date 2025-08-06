@@ -1,4 +1,5 @@
 ﻿using BlogTalks.Domain.DTOs;
+using BlogTalks.Domain.Reposotories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -6,20 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace BlogTalks.Application.Comments.Queries
 {
     public class GetHandler : IRequestHandler<GetRequest, IEnumerable<GetResponse>>
     {
-        private readonly FakeDataStore _dataStore;
+        private readonly ICommentRepository _commentRepository;
 
-        public GetHandler(FakeDataStore dataStore)
+        public GetHandler(ICommentRepository commentRepository)
         {
-            _dataStore = dataStore;
+            _commentRepository = commentRepository;
         }
 
-        public async Task<IEnumerable<GetResponse>> Handle(GetRequest request, CancellationToken cancellationToken)
+        public Task<IEnumerable<GetResponse>> Handle(GetRequest request, CancellationToken cancellationToken)
         {
-            var comments = await _dataStore.GetAllComments();
+            var comments = _commentRepository.GetAll();
 
             var response = comments.Select(c => new GetResponse
             {
@@ -30,9 +32,8 @@ namespace BlogTalks.Application.Comments.Queries
                 BlogPostId = c.BlogPostId
             });
 
-            return response;
+            return Task.FromResult(response);
         }
-
     }
 
 }

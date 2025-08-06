@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.Comments.Comands
 {
-    public record AddRequest(AddResponse Comment) : IRequest<AddResponse>;
+    public record AddRequest(string Text, int BlogPostId) : IRequest<AddResponse>;
 
 
 }
