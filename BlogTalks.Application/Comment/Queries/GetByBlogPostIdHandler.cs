@@ -36,8 +36,7 @@ namespace BlogTalks.Application.Comments.Queries
                 var response = new GetByBlogPostIdResponse
                 {
                     Id = item.Id,
-                    Text = item.Text,
-                 //   CreatorName = "XXX", // not implemted yet, TODO
+                    Text = item.Text, 
                     CreatedAt = item.CreatedAt,
                     CreatedBy = item.CreatedBy,
                 };

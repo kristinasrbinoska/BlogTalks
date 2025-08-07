@@ -39,6 +39,7 @@ namespace BlogTalks.Application.Comments.Comands
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = comment.CreatedBy,
                 BlogPostId = comment.BlogPostId
+               
             });
         }
     }

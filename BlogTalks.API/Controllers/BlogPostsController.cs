@@ -52,7 +52,7 @@ namespace BlogTalks.API.Controllers
                 return NotFound();
             }
             return Ok(blogPosts);
-         //   return CreatedAtRoute("GetBlogPostById", new { id = blogPosts.Id }, blogPosts); ;
+        
         }
 
         // PUT api/<BlogPostsController>/5
