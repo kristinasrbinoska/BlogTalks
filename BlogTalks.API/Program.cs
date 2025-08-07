@@ -1,7 +1,10 @@
+using BlogTalks.API;
+using BlogTalks.Application;
 using BlogTalks.Application.BlogPosts.Queries;
 using BlogTalks.Application.Comments.Comands;
 using BlogTalks.Application.Comments.Queries;
 using BlogTalks.Domain.DTOs;
+using BlogTalks.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,17 +17,11 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.CustomSchemaIds(type => type.FullName);
 });
-builder.Services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-    cfg.RegisterServicesFromAssembly(typeof(BlogTalks.Application.Comments.Queries.GetResponse).Assembly);
-    cfg.RegisterServicesFromAssembly(typeof(EditResponse).Assembly);
-    cfg.RegisterServicesFromAssembly(typeof(DeleteResponse).Assembly);
-    cfg.RegisterServicesFromAssembly(typeof(BlogTalks.Application.BlogPosts.Queries.GetResponse).Assembly);
-});
-builder.Services.AddSingleton<FakeDataStore>();
-
-
+builder.Services
+        .AddPresentation()
+        .AddApplication()
+        .AddInfrastructure(builder.Configuration);
+// Use the fully qualified name to resolve the a
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

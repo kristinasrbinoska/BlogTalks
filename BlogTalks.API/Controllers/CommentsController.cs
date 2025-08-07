@@ -41,9 +41,9 @@ namespace BlogTalks.API.Controllers
         // GET api/<CommentsController>/5
 
         [HttpGet("/blogPosts/{blogPostId}/comments", Name = "GetByBlogPostId")]
-        public async Task<ActionResult> Get([FromRoute] GetByBlogPostIdRequest request)
+        public async Task<ActionResult> Get([FromRoute] int blogPostId)
         {
-            var comment = await _mediator.Send(request);
+            var comment = await _mediator.Send(new GetByBlogPostIdRequest(blogPostId));
             if (comment == null)
             {
                 return NotFound();
@@ -55,19 +55,22 @@ namespace BlogTalks.API.Controllers
 
         // POST api/<CommentsController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] AddResponse response)
+        public async Task<ActionResult> Post([FromBody] AddRequest request)
         {
-            var commentToReturn = await _mediator.Send(new AddRequest(response));
+            var commentToReturn = await _mediator.Send(request);
+            if (commentToReturn == null)
+            {
+                return NotFound();
+            }
             return Ok(commentToReturn);
 
-          //  return CreatedAtRoute("GetCommentById", new { id = commentToReturn.Id }, commentToReturn);
         }
 
         // PUT api/<CommentsController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] EditResponse response)
+        public async Task<IActionResult> Put([FromRoute]int id, [FromBody] EditRequest request)
         {
-            var commentToReturn = await _mediator.Send(new EditRequest(id, response));
+            var commentToReturn = await _mediator.Send(new EditRequest(id,request.Text));
             if (commentToReturn == null)
             {
                 return NotFound();

@@ -1,27 +1,22 @@
-﻿
-using BlogTalks.Domain.Shared;
+﻿using BlogTalks.Application.Comments.Queries;
+using BlogTalks.Domain.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlogTalks.Domain.Entities
+namespace BlogTalks.Application.BlogPosts.Queries
 {
-    public class BlogPost : IEntity
+    public class GetResponse
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Text { get; set; } = string.Empty;
-
         public int CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-
+        public DateTime Timestamp { get; set; }
         public List<string> Tags { get; set; } = new List<string>();
-
-        //Navigation 
-        public List<Comment> Comments { get; set; } = new List<Comment>();
+        public List<CommentDTO> Comments { get; set; } = new List<CommentDTO>();
 
     }
 }
