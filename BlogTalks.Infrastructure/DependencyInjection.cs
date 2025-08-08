@@ -23,6 +23,8 @@ namespace BlogTalks.Infrastructure
             
             services.AddTransient<IBlogPostRepository, BlogPostRepository>();
             services.AddTransient<ICommentRepository, CommentRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            
             return services;
         }
     }
