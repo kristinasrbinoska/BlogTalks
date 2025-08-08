@@ -19,7 +19,16 @@ namespace BlogTalks.Application.User.Commands
         }
 
         public async Task<RegisterResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
-        {
+        { 
+
+            if (_userRepository.GetByEmail(request.Email) != null)
+            {
+                return new RegisterResponse { Message = $"User with mail {request.Email} already exist" };
+            }
+            if (_userRepository.GetByUsername(request.Username) != null)
+            {
+                return new RegisterResponse { Message = $"User with username  {request.Username} already exists" };
+            }
             var user = new Domain.Entities.User
             {
                 Email = request.Email,
@@ -27,15 +36,6 @@ namespace BlogTalks.Application.User.Commands
                 Username = request.Username,
                 Password = PasswordHasher.HashPassword(request.Password),
             };
-
-            if (_userRepository.GetByEmail(user.Email) != null)
-            {
-                return new RegisterResponse { Message = $"User with mail {request.Email} already exist" };
-            }
-            if (_userRepository.GetByUsername(user.Username) != null)
-            {
-                return new RegisterResponse { Message = $"User with username  {request.Username} already exists" };
-            }
             _userRepository.Add(user);
             return new RegisterResponse { Message = "Register successfull" };
         }

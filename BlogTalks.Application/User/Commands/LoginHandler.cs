@@ -17,29 +17,40 @@ namespace BlogTalks.Application.User.Commands
         public LoginHandler(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-        }
-
+        } 
         public Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
         {
-            var userByEmail = _userRepository.GetByEmail(request.Email);
             var userByUsername = _userRepository.GetByUsername(request.Username);
+            var userByEmail = _userRepository.GetByEmail(request.Email);
+
+            if (userByUsername == null && userByEmail == null)
+            {
+                return Task.FromResult(new LoginResponse
+                {
+                    Token = $"User with username '{request.Username}' and email '{request.Email}' not found"
+                });
+            }
+
+            if (userByUsername == null)
+            {
+                return Task.FromResult(new LoginResponse
+                {
+                    Token = $"User with username '{request.Username}' not found"
+                });
+            }
 
             if (userByEmail == null)
             {
                 return Task.FromResult(new LoginResponse
                 {
-                    Token = $"Email {request.Email} not found"
-                });
-            }
-            if (userByUsername == null)
-            {
-                return Task.FromResult(new LoginResponse
-                {
-                    Token = $"Username {request.Username} not found"
+                    Token = $"User with email '{request.Email}' not found"
                 });
             }
 
-            if (!PasswordHasher.VerifyPassword(request.Password, userByUsername.Password))
+            var user = userByUsername ?? userByEmail;
+            var passwordToCheck = user.Password;
+
+            if (!PasswordHasher.VerifyPassword(request.Password, passwordToCheck))
             {
                 return Task.FromResult(new LoginResponse
                 {
@@ -49,8 +60,9 @@ namespace BlogTalks.Application.User.Commands
 
             return Task.FromResult(new LoginResponse
             {
-                Token = ""
+                Token = "" 
             });
         }
+
     }
 }
