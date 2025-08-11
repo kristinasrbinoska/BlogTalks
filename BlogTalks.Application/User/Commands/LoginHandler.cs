@@ -1,4 +1,5 @@
-﻿using BlogTalks.Domain.Reposotories;
+﻿using BlogTalks.Application.Abstractions;
+using BlogTalks.Domain.Reposotories;
 using BlogTalks.Domain.Shared;
 using MediatR;
 using System;
@@ -12,12 +13,14 @@ namespace BlogTalks.Application.User.Commands
     public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IAuthService _authService;
 
 
-        public LoginHandler(IUserRepository userRepository)
+        public LoginHandler(IUserRepository userRepository, IAuthService authService)
         {
             _userRepository = userRepository;
-        } 
+            _authService = authService;
+        }
         public Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
         {
             var userByUsername = _userRepository.GetByUsername(request.Username);
@@ -27,7 +30,8 @@ namespace BlogTalks.Application.User.Commands
             {
                 return Task.FromResult(new LoginResponse
                 {
-                    Token = $"User with username '{request.Username}' and email '{request.Email}' not found"
+                    IsSuccess = false,
+                    Message = $"User with username '{request.Username}' and email '{request.Email}' not found"
                 });
             }
 
@@ -35,7 +39,8 @@ namespace BlogTalks.Application.User.Commands
             {
                 return Task.FromResult(new LoginResponse
                 {
-                    Token = $"User with username '{request.Username}' not found"
+                    IsSuccess = false,
+                    Message = $"User with username '{request.Username}' not found"
                 });
             }
 
@@ -43,7 +48,8 @@ namespace BlogTalks.Application.User.Commands
             {
                 return Task.FromResult(new LoginResponse
                 {
-                    Token = $"User with email '{request.Email}' not found"
+                    IsSuccess = false,
+                    Message = $"User with email '{request.Email}' not found"
                 });
             }
 
@@ -54,13 +60,17 @@ namespace BlogTalks.Application.User.Commands
             {
                 return Task.FromResult(new LoginResponse
                 {
-                    Token = "Invalid password"
+                    IsSuccess = false,
+                    Message = "Invalid password"
                 });
             }
+            
 
             return Task.FromResult(new LoginResponse
             {
-                Token = "" 
+                IsSuccess = true,
+                Message = "Login successful",
+                Token = _authService.Create(user)
             });
         }
 

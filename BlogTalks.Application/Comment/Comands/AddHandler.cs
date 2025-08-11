@@ -3,6 +3,7 @@ using BlogTalks.Domain.DTOs;
 using BlogTalks.Domain.Entities;
 using BlogTalks.Domain.Reposotories;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +16,23 @@ namespace BlogTalks.Application.Comments.Comands
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IBlogPostRepository _blogPostRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AddHandler(ICommentRepository commentRepository, IBlogPostRepository blogPostRepository)
+        public AddHandler(ICommentRepository commentRepository, IBlogPostRepository blogPostRepository, IHttpContextAccessor httpContextAccessor)
         {
             _commentRepository = commentRepository;
             _blogPostRepository = blogPostRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<AddResponse> Handle(AddRequest request, CancellationToken cancellationToken)
         {
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirst("userId")?.Value;
+            int userIdValue = 0;
+            if (int.TryParse(userId, out int parsedUserId))
+            {
+                userIdValue = parsedUserId;
+            }
             var blogPost = _blogPostRepository.GetById(request.BlogPostId);
             if(blogPost == null)
             {
@@ -33,7 +42,7 @@ namespace BlogTalks.Application.Comments.Comands
             var comment = new Comment
             {
                 Text = request.Text,
-                CreatedBy = 5,
+                CreatedBy = userIdValue,
                 CreatedAt = DateTime.UtcNow,
                 BlogPostId = request.BlogPostId,
                 BlogPost = blogPost
