@@ -1,4 +1,5 @@
 ﻿using BlogTalks.Domain.DTOs;
+using BlogTalks.Domain.Entities;
 using BlogTalks.Domain.Reposotories;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +31,10 @@ namespace BlogTalks.Application.Comments.Comands
             }
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("userId")?.Value;
             if (!int.TryParse(userIdClaim, out int currentUserId))
+            {
+                return null;
+            }
+            if (comment.CreatedBy != currentUserId)
             {
                 return null;
             }

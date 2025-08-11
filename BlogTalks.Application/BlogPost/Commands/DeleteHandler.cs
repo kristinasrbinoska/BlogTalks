@@ -33,6 +33,10 @@ namespace BlogTalks.Application.BlogPosts.Commands
             {
                 return null;
             }
+            if (blogPost.CreatedBy != currentUserId)
+            {
+                return null;
+            }
             _blogPostRepository.Delete(blogPost);
             return Task.FromResult(new DeleteResponse
             {
