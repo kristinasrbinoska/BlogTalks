@@ -1,7 +1,9 @@
 ﻿using BlogTalks.Application.BlogPosts.Commands;
 using BlogTalks.Application.BlogPosts.Queries;
 using BlogTalks.Domain.DTOs;
+using BlogTalks.Infrastructure.Atuhenticatin;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -20,8 +22,10 @@ namespace BlogTalks.API.Controllers
         }
 
 
+
         // GET: api/<BlogPostsController>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult> Get()
         {
             var blogPosts = await _mediator.Send(new GetRequest());
@@ -30,6 +34,7 @@ namespace BlogTalks.API.Controllers
 
         // GET api/<BlogPostsController>/5
         [HttpGet("{id}",Name = "GetBlogPostById")]
+        [Authorize]
         public async Task<ActionResult> Get([FromRoute] GetByIdRequest request )
         {
             var blogPost = await _mediator.Send(request);
@@ -44,6 +49,7 @@ namespace BlogTalks.API.Controllers
 
         // POST api/<BlogPostsController>
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult> Add([FromBody] AddRequest request)
         {
             var blogPosts = await _mediator.Send(request);
@@ -57,6 +63,7 @@ namespace BlogTalks.API.Controllers
 
         // PUT api/<BlogPostsController>/5
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<ActionResult> Put([FromRoute]int id, [FromBody] EditRequest request)
         {
             var blogPosts = await _mediator.Send(new EditRequest(id, request.Title, request.Text, request.Tags));
@@ -69,6 +76,7 @@ namespace BlogTalks.API.Controllers
 
         // DELETE api/<BlogPostsController>/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             var blogPosts = await _mediator.Send(new DeleteRequest(id));
