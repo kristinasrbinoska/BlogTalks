@@ -39,7 +39,7 @@ namespace BlogTalks.Application.Comments.Comands
                 return null; 
             }
 
-            var comment = new Comment
+            var comment = new Domain.Entities.Comment
             {
                 Text = request.Text,
                 CreatedBy = userIdValue,

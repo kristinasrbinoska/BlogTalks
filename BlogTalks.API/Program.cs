@@ -1,4 +1,5 @@
 using BlogTalks.API;
+using BlogTalks.API.Middlewares;
 using BlogTalks.Application;
 using BlogTalks.Application.BlogPosts.Queries;
 using BlogTalks.Application.Comments.Comands;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Runtime;
 using System.Text;
 
@@ -19,6 +21,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()
+    .WriteTo.File("logs/blogTalksLogs.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+builder.Host.UseSerilog();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(options =>
@@ -46,6 +55,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 });
 
+
+
 builder.Services
         .AddPresentation()
         .AddApplication()
@@ -62,6 +73,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 
 app.UseHttpsRedirection();
 

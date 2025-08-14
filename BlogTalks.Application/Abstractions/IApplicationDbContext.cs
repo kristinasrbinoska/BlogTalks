@@ -10,7 +10,7 @@ namespace BlogTalks.Application.Abstraction
 {
     public interface IApplicationDbContext
     {
-        public DbSet<BlogPost> BlogPosts { get; set; }
-        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Domain.Entities.BlogPost> BlogPosts { get; set; }
+        public DbSet<Domain.Entities.Comment> Comments { get; set; }
     }
 }
