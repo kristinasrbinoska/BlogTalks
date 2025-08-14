@@ -13,16 +13,17 @@ namespace BlogTalks.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
-
-        public UserController(IMediator mediator)
+        private readonly ILogger<UserController> _logger;
+        public UserController(IMediator mediator, ILogger<UserController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
         [HttpPost("register")]
 
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-
+            _logger.LogInformation("Registering a new user");
             var response = _mediator.Send(request);
             if (response == null)
             {
@@ -34,7 +35,7 @@ namespace BlogTalks.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-
+            _logger.LogInformation("User login attempt");
             var response = _mediator.Send(request);
             if (response == null)
             {

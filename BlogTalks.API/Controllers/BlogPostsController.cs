@@ -1,6 +1,7 @@
 ﻿using BlogTalks.Application.BlogPosts.Commands;
 using BlogTalks.Application.BlogPosts.Queries;
 using BlogTalks.Domain.DTOs;
+using BlogTalks.Domain.Entities;
 using BlogTalks.Infrastructure.Atuhenticatin;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -15,10 +16,12 @@ namespace BlogTalks.API.Controllers
     public class BlogPostsController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<BlogPostsController> _logger;
 
-        public BlogPostsController(IMediator mediator)
+        public BlogPostsController(IMediator mediator, ILogger<BlogPostsController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
 
@@ -28,6 +31,7 @@ namespace BlogTalks.API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> Get()
         {
+            _logger.LogInformation("Fetching all blog posts");
             var blogPosts = await _mediator.Send(new GetRequest());
             return Ok(blogPosts);
         }
@@ -37,6 +41,7 @@ namespace BlogTalks.API.Controllers
         [Authorize]
         public async Task<ActionResult> Get([FromRoute] GetByIdRequest request )
         {
+            _logger.LogInformation($"Fetching blog post with ID: {request.id}");
             var blogPost = await _mediator.Send(request);
             if (blogPost == null)
             {
@@ -52,6 +57,7 @@ namespace BlogTalks.API.Controllers
         [Authorize]
         public async Task<ActionResult> Add([FromBody] AddRequest request)
         {
+            _logger.LogInformation("Adding a new blog post");
             var blogPosts = await _mediator.Send(request);
             if (blogPosts == null)
             {
@@ -66,6 +72,7 @@ namespace BlogTalks.API.Controllers
         [Authorize]
         public async Task<ActionResult> Put([FromRoute]int id, [FromBody] EditRequest request)
         {
+            _logger.LogInformation($"Updating blog post with ID: {id}");
             var blogPosts = await _mediator.Send(new EditRequest(id, request.Title, request.Text, request.Tags));
             if (blogPosts == null)
             {
@@ -79,6 +86,7 @@ namespace BlogTalks.API.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
+            _logger.LogInformation($"Deleting blog post with ID: {id}");
             var blogPosts = await _mediator.Send(new DeleteRequest(id));
             if (blogPosts == null)
             {

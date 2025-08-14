@@ -23,7 +23,7 @@ namespace BlogTalks.Application.Comments.Queries
             var comment = _commentRepository.GetById(request.id);
             if (comment == null)
             {
-                return null;
+                throw null;
             }
 
             return Task.FromResult(new GetCommentByIdResponse

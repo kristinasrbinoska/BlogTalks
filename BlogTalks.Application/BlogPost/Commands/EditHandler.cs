@@ -29,18 +29,18 @@ namespace BlogTalks.Application.BlogPosts.Commands
 
             if (blogPost == null)
             {
-                return null;
+                throw null;
             }
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("userId")?.Value;
             if (!int.TryParse(userIdClaim, out int currentUserId))
             {
-                return null;
+                throw null;
             }
 
            
             if (blogPost.CreatedBy != currentUserId)
             {
-                return null;
+                throw null;
             }
             blogPost.Title = request.Title;
             blogPost.Text = request.Text;

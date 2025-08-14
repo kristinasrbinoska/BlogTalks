@@ -23,7 +23,7 @@ namespace BlogTalks.Application.User.Commands
 
             if (_userRepository.GetByEmail(request.Email) != null)
             {
-                return new RegisterResponse { Message = $"User with mail {request.Email} already exist" };
+              return new RegisterResponse { Message = $"User with mail {request.Email} already exist" };
             }
             if (_userRepository.GetByUsername(request.Username) != null)
             {

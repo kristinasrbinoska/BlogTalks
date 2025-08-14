@@ -27,16 +27,16 @@ namespace BlogTalks.Application.Comments.Comands
             var comment = _commentRepository.GetById(request.id);
             if (comment == null)
             {
-                return null;
+                throw null;
             }
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("userId")?.Value;
             if (!int.TryParse(userIdClaim, out int currentUserId))
             {
-                return null;
+                throw null;
             }
             if (comment.CreatedBy != currentUserId)
             {
-                return null;
+                throw null;
             }
             _commentRepository.Delete(comment);
             return Task.FromResult(new DeleteResponse

@@ -36,10 +36,10 @@ namespace BlogTalks.Application.Comments.Comands
             var blogPost = _blogPostRepository.GetById(request.BlogPostId);
             if(blogPost == null)
             {
-                return null; 
+                throw null; 
             }
 
-            var comment = new Comment
+            var comment = new Domain.Entities.Comment
             {
                 Text = request.Text,
                 CreatedBy = userIdValue,
