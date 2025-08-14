@@ -36,7 +36,7 @@ namespace BlogTalks.Application.Comments.Comands
             var blogPost = _blogPostRepository.GetById(request.BlogPostId);
             if(blogPost == null)
             {
-                throw null; 
+                return null; 
             }
 
             var comment = new Domain.Entities.Comment

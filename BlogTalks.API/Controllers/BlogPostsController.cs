@@ -1,4 +1,5 @@
-﻿using BlogTalks.Application.BlogPosts.Commands;
+﻿using Azure.Core;
+using BlogTalks.Application.BlogPosts.Commands;
 using BlogTalks.Application.BlogPosts.Queries;
 using BlogTalks.Domain.DTOs;
 using BlogTalks.Domain.Entities;
@@ -41,7 +42,7 @@ namespace BlogTalks.API.Controllers
         [Authorize]
         public async Task<ActionResult> Get([FromRoute] GetByIdRequest request )
         {
-            _logger.LogInformation($"Fetching blog post with ID: {request.id}");
+            _logger.LogInformation("Fetching blog post with ID: {requestId}", request.id);
             var blogPost = await _mediator.Send(request);
             if (blogPost == null)
             {
@@ -72,7 +73,7 @@ namespace BlogTalks.API.Controllers
         [Authorize]
         public async Task<ActionResult> Put([FromRoute]int id, [FromBody] EditRequest request)
         {
-            _logger.LogInformation($"Updating blog post with ID: {id}");
+            _logger.LogInformation("Fetching blog post with ID: {id}", id);  
             var blogPosts = await _mediator.Send(new EditRequest(id, request.Title, request.Text, request.Tags));
             if (blogPosts == null)
             {
@@ -86,7 +87,7 @@ namespace BlogTalks.API.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            _logger.LogInformation($"Deleting blog post with ID: {id}");
+            _logger.LogInformation("Deleting blog post with ID: {id}",id);
             var blogPosts = await _mediator.Send(new DeleteRequest(id));
             if (blogPosts == null)
             {

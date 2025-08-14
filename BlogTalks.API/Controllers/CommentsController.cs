@@ -1,4 +1,5 @@
-﻿using BlogTalks.Application.Comments.Comands;
+﻿using Azure.Core;
+using BlogTalks.Application.Comments.Comands;
 using BlogTalks.Application.Comments.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -37,7 +38,7 @@ namespace BlogTalks.API.Controllers
         [Authorize]
         public async Task<ActionResult> Get([FromRoute] GetCommentByIdRequest request)
         {
-            _logger.LogInformation($"Fetching comment with ID: {request.id}");
+            _logger.LogInformation("Fetching comment with ID: {requestId}", request.id);
             var comment = await _mediator.Send(request);
             if (comment == null)
             {
@@ -52,7 +53,7 @@ namespace BlogTalks.API.Controllers
         [Authorize]
         public async Task<ActionResult> Get([FromRoute] int blogPostId)
         {
-            _logger.LogInformation($"Fetching comments for blog post with ID: {blogPostId}");
+            _logger.LogInformation("Fetching commnents for blog post with with ID: {blogPostId}", blogPostId);
             var comment = await _mediator.Send(new GetByBlogPostIdRequest(blogPostId));
             if (comment == null)
             {
@@ -83,7 +84,7 @@ namespace BlogTalks.API.Controllers
         [Authorize]
         public async Task<IActionResult> Put([FromRoute]int id, [FromBody] EditRequest request)
         {
-            _logger.LogInformation($"Updating comment with ID: {id}");
+            _logger.LogInformation("Updating comment with ID: {id}", id);
             var commentToReturn = await _mediator.Send(new EditRequest(id,request.Text));
             if (commentToReturn == null)
             {
@@ -98,7 +99,7 @@ namespace BlogTalks.API.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            _logger.LogInformation($"Deleting comment with ID: {id}");
+            _logger.LogInformation("Deleting comment with ID: {id}", id);
             var commentToReturn = await _mediator.Send(new DeleteRequest(id));
             if (commentToReturn == null)
             {

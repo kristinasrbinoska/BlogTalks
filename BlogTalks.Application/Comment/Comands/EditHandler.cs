@@ -26,12 +26,12 @@ namespace BlogTalks.Application.Comments.Comands
             var comment =  _commentRepository.GetById(request.id);
             if (comment == null)
             {
-                throw null;
+                return null;
             }
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("userId")?.Value;
             if (!int.TryParse(userIdClaim, out int currentUserId))
             {
-                throw null;
+                return null;
             }
             comment.Text = request.Text;
             comment.CreatedAt = DateTime.UtcNow;

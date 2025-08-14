@@ -24,7 +24,7 @@ namespace BlogTalks.Application.BlogPosts.Queries
             var blogPost = _blogPostRepository.GetById(request.id);
             if (blogPost == null)
             {
-                throw null;
+                return null;
             }
             return Task.FromResult(new GetByIdResponse
             {

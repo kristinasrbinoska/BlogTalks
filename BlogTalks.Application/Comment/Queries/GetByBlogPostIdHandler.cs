@@ -25,7 +25,7 @@ namespace BlogTalks.Application.Comments.Queries
         {  
             var blogPost = _blogPostRepository.GetById(request.blogPostId);
             if (blogPost == null)
-                throw null;
+                return null;
 
             var list = _commentRepository.GetByBlogPostId(request.blogPostId);
 

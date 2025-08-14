@@ -26,16 +26,16 @@ namespace BlogTalks.Application.BlogPosts.Commands
             var blogPost = _blogPostRepository.GetById(request.id);
             if (blogPost == null)
             {
-                throw null;
+                return null;
             }
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("userId")?.Value;
             if (!int.TryParse(userIdClaim, out int currentUserId))
             {
-                throw null;
+                return null;
             }
             if (blogPost.CreatedBy != currentUserId)
             {
-                throw null;
+                return null;
             }
             _blogPostRepository.Delete(blogPost);
             return Task.FromResult(new DeleteResponse
