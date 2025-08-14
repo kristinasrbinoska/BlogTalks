@@ -12,5 +12,6 @@ namespace BlogTalks.Domain.Reposotories
     public interface ICommentRepository : IRepository<Comment>
     {
         IEnumerable<Comment> GetByBlogPostId(int blogPostId);
+        public IEnumerable<Comment> GetCommentsByIds(IEnumerable<int> ids);
     }
 }

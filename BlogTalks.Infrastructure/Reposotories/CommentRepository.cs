@@ -15,4 +15,12 @@ public class CommentRepository : GenericRepository<Comment>, ICommentRepository
             .Where(c => c.BlogPostId == blogPostId)
             .ToList();
     }
+
+    public IEnumerable<Comment> GetCommentsByIds(IEnumerable<int> ids)
+    {
+        return
+            _dbSet
+            .Where(c => ids.Contains(c.Id))
+            .ToList();
+    }
 }

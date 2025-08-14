@@ -14,13 +14,31 @@ namespace BlogTalks.Infrastructure.Reposotories
     {
         public BlogPostRepository(ApplicationDbContext context) : base(context, context.BlogPosts)
         {
-           
+
         }
-        public IEnumerable<BlogPost> GetAllWithComments()
+
+        public IEnumerable<BlogPost> GetAllWithComments(int? pageNumber, int? pageSize, string? searchWord, string? tag)
         {
-            return _dbSet
-                .Include(b => b.Comments)
-                .ToList();
+            var query = _dbSet.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchWord))
+            {
+                query = query.Where(bp => bp.Title.Contains(searchWord) || bp.Text.Contains(searchWord));
+            }
+            if (!string.IsNullOrEmpty(tag))
+            {
+                query = query.Where(bp => bp.Tags.Contains(tag));
+            }
+            if (pageNumber.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+            return query;
+
+        }
+        public int GetTotalNumber()
+        {
+            return _dbSet.Count();
         }
     }
 }

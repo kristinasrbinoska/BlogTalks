@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.BlogPosts.Queries
 {
-    public record GetRequest(): IRequest<IEnumerable<GetResponse>>;
+    public record GetRequest(int? PageNumber, int? PageSize, string? SearchWord, string? Tag) : IRequest<GetResponse>;
 
 }

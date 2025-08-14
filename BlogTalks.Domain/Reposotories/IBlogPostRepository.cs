@@ -11,6 +11,9 @@ namespace BlogTalks.Domain.Reposotories
 {
     public interface IBlogPostRepository : IRepository<BlogPost>
     {
-        IEnumerable<BlogPost> GetAllWithComments();
+        IEnumerable<BlogPost> GetAllWithComments(int? pageNumber, int? pageSize, string? searchWord, string? tag);
+        public int GetTotalNumber();
+
+
     }
 }
