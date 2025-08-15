@@ -1,4 +1,5 @@
 ﻿using BlogTalks.Application.Comments.Queries;
+using BlogTalks.Application.Contracts;
 using BlogTalks.Domain.DTOs;
 using BlogTalks.Domain.Reposotories;
 using MediatR;
@@ -10,37 +11,57 @@ using System.Threading.Tasks;
 
 namespace BlogTalks.Application.BlogPosts.Queries
 {
-    public class GetHandler : IRequestHandler<GetRequest, IEnumerable<GetResponse>>
+    public class GetHandler : IRequestHandler<GetRequest, GetResponse>
     {
         private readonly IBlogPostRepository _blogPostRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ICommentRepository _commentRepository;
 
-        public GetHandler(IBlogPostRepository blogPostRepository)
+        public GetHandler(IBlogPostRepository blogPostRepository, IUserRepository userRepository, ICommentRepository commentRepository)
         {
             _blogPostRepository = blogPostRepository;
+            _userRepository = userRepository;
+            _commentRepository = commentRepository;
         }
 
-        public Task<IEnumerable<GetResponse>> Handle(GetRequest request, CancellationToken cancellationToken)
+        public async Task<GetResponse> Handle(GetRequest request, CancellationToken cancellationToken)
         {
-            var blogPosts = _blogPostRepository.GetAllWithComments();
-        
-            var response = blogPosts.Select(b => new GetResponse
+            var pageNumber = request.PageNumber ?? 1;
+            var pageSize = request.PageSize ?? 10;
+
+            var (totalCount, blogPosts) = await _blogPostRepository.GetPagedAsync(
+                pageNumber,
+                pageSize,
+                request.SearchWord,
+                request.Tag
+            );
+
+            var userIds = blogPosts.Select(bp => bp.CreatedBy).Distinct().ToList();
+            var users = _userRepository.GetUsersByIds(userIds);
+
+            var userDict = users.ToDictionary(u => u.Id, u => u.Username);
+            var blogPostModels = blogPosts.Select(bp => new BlogPostModel
             {
-                Id = b.Id,
-                Title = b.Title,
-                Text = b.Text,
-                Timestamp = b.CreatedAt,
-                CreatedBy = b.CreatedBy,
-                Tags = b.Tags,
-                Comments = b.Comments.Select(c => new CommentDTO
+                Id = bp.Id,
+                Title = bp.Title,
+                Text = bp.Text,
+                Tags = bp.Tags,
+                CreatorName = userDict.GetValueOrDefault(bp.CreatedBy, string.Empty)
+            }).ToList();
+
+            var response = new GetResponse
+            {
+                BlogPosts = blogPostModels,
+                Metadata = new Metadata
                 {
-                    Id = c.Id,
-                    Text = c.Text,
-                    CreatedAt = c.CreatedAt,
-                    CreatedBy = c.CreatedBy,
-                    BlogPostId = c.BlogPostId
-                }).ToList()
-            });
-            return Task.FromResult(response);
+                    TotalCount = totalCount,
+                    PageSize = pageSize,
+                    PageNumber = pageNumber,
+                    TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+                }
+            };
+
+            return response;
         }
     }
 }

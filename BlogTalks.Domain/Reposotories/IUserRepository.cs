@@ -12,5 +12,29 @@ namespace BlogTalks.Domain.Reposotories
     {
         public User GetByEmail(string Email);
         public User GetByUsername(string Username);
+        public IEnumerable<User> GetUsersByIds(IEnumerable<int> ids);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

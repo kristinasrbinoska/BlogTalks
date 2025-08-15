@@ -21,6 +21,10 @@ namespace BlogTalks.Infrastructure.Reposotories
         {
             return _context.Users.Where(u => u.Username == Username).FirstOrDefault();        }
 
-     
+        public IEnumerable<User> GetUsersByIds(IEnumerable<int> ids)
+        {
+            return _context.Users
+                .Where(u => ids.Contains(u.Id));
+        }
     }
 }

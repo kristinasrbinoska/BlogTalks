@@ -30,10 +30,10 @@ namespace BlogTalks.API.Controllers
         // GET: api/<BlogPostsController>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> Get([FromQuery] int? pageNumber, int? pageSize,string? searchWord,string? tag)
         {
             _logger.LogInformation("Fetching all blog posts");
-            var blogPosts = await _mediator.Send(new GetRequest());
+            var blogPosts = await _mediator.Send(new GetRequest(pageNumber,pageSize,searchWord,tag));
             return Ok(blogPosts);
         }
 

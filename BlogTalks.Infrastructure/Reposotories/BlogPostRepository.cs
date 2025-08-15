@@ -2,25 +2,50 @@
 using BlogTalks.Domain.Reposotories;
 using BlogTalks.Infrastructure.Data.DataContext;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BlogTalks.Infrastructure.Reposotories
+namespace BlogTalks.Infrastructure.Repositories
 {
     public class BlogPostRepository : GenericRepository<BlogPost>, IBlogPostRepository
     {
-        public BlogPostRepository(ApplicationDbContext context) : base(context, context.BlogPosts)
+        public BlogPostRepository(ApplicationDbContext context) : base(context) { }
+
+        public BlogPost? GetBlogPostByName(string name)
         {
-           
+            return _dbSet.FirstOrDefault(p => p.Title.Equals(name));
         }
-        public IEnumerable<BlogPost> GetAllWithComments()
+
+        public IQueryable<BlogPost> Query() => _context.BlogPosts.AsQueryable();
+
+        public async Task<(int count, List<BlogPost> list)> GetPagedAsync(
+            int? pageNumber,
+            int? pageSize,
+            string? searchWord,
+            string? tag)
         {
-            return _dbSet
-                .Include(b => b.Comments)
-                .ToList();
+            var pgNum = pageNumber ?? 1;  
+            var pgSize = pageSize ?? 10;   
+
+            var query = _context.BlogPosts.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchWord))
+                query = query.Where(bp => bp.Title.Contains(searchWord) || bp.Text.Contains(searchWord));
+
+            if (!string.IsNullOrWhiteSpace(tag))
+                query = query.Where(bp => bp.Tags.Contains(tag));
+
+            var count = await query.CountAsync();
+
+            var list = await query
+                .Skip((pgNum - 1) * pgSize)
+                .Take(pgSize)
+                .ToListAsync();
+
+            return (count, list);
+        }
+
+        public int GetTotalNumber()
+        {
+            return _dbSet.Count();
         }
     }
 }
