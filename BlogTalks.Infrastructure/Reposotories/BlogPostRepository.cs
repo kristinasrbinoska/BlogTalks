@@ -28,7 +28,7 @@ namespace BlogTalks.Infrastructure.Repositories
             var query = _context.BlogPosts.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchWord))
-                query = query.Where(bp => bp.Title.Contains(searchWord) || bp.Text.Contains(searchWord));
+                query = query.Where(bp => bp.Title.ToLower().Contains(searchWord.ToLower()) || bp.Text.Contains(searchWord.ToLower()));
 
             if (!string.IsNullOrWhiteSpace(tag))
                 query = query.Where(bp => bp.Tags.Contains(tag));
