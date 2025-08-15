@@ -2,6 +2,7 @@
 using BlogTalks.Domain.Reposotories;
 using BlogTalks.Infrastructure.Atuhenticatin;
 using BlogTalks.Infrastructure.Data.DataContext;
+using BlogTalks.Infrastructure.Repositories;
 using BlogTalks.Infrastructure.Reposotories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +11,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BlogTalks.Infrastructure
 {
@@ -20,14 +23,14 @@ namespace BlogTalks.Infrastructure
         {
             var connectionString = configuration.GetConnectionString("Database");
 
-            services.AddDbContext<ApplicationDbContext>(
-                options => options
-                    .UseNpgsql(connectionString, npgsqlOptions =>
-                        npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Default)));
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(connectionString, npgsqlOptions =>
+                    npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Default)));
 
             services.AddTransient<IBlogPostRepository, BlogPostRepository>();
             services.AddTransient<ICommentRepository, CommentRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -49,7 +52,6 @@ namespace BlogTalks.Infrastructure
                             Encoding.UTF8.GetBytes(jwtSettings.Secret))
                     };
 
-                    
                     options.Events = new JwtBearerEvents
                     {
                         OnMessageReceived = context =>

@@ -24,53 +24,44 @@ namespace BlogTalks.Application.BlogPosts.Queries
             _commentRepository = commentRepository;
         }
 
-        public Task<GetResponse> Handle(GetRequest request, CancellationToken cancellationToken)
+        public async Task<GetResponse> Handle(GetRequest request, CancellationToken cancellationToken)
         {
-            var blogPosts = _blogPostRepository.GetAllWithComments(
-                request.PageNumber,
-                request.PageSize,
+            var pageNumber = request.PageNumber ?? 1;
+            var pageSize = request.PageSize ?? 10;
+
+            var (totalCount, blogPosts) = await _blogPostRepository.GetPagedAsync(
+                pageNumber,
+                pageSize,
                 request.SearchWord,
                 request.Tag
             );
 
+            var userIds = blogPosts.Select(bp => bp.CreatedBy).Distinct().ToList();
+            var users = _userRepository.GetUsersByIds(userIds);
+
+            var userDict = users.ToDictionary(u => u.Id, u => u.Username);
             var blogPostModels = blogPosts.Select(bp => new BlogPostModel
             {
                 Id = bp.Id,
                 Title = bp.Title,
                 Text = bp.Text,
                 Tags = bp.Tags,
-                Comments = bp.Comments.Select(c => new CommentModel
-                {
-                    Text = c.Text,
-                    CreatedAt = c.CreatedAt,
-                   CreatedBy = c.CreatedBy
-                }).ToList()
-
+                CreatorName = userDict.GetValueOrDefault(bp.CreatedBy, string.Empty)
             }).ToList();
-
-            var userIds = blogPostModels.Select(bp => bp.Id).Distinct().ToList();
-            var userList = _userRepository.GetUsersByIds(userIds);
-            foreach (var blog in blogPostModels)
-            {
-                blog.CreatorName = userList.FirstOrDefault(u => u.Id == blog.Id)?.Name ?? string.Empty;
-            }
-
-            var count = _blogPostRepository.GetTotalNumber();
 
             var response = new GetResponse
             {
                 BlogPosts = blogPostModels,
                 Metadata = new Metadata
                 {
-                    PageNumber = request.PageNumber ?? 1,
-                    PageSize = request.PageSize ?? blogPostModels.Count,
-                    TotalCount = count,
-                    TotalPages = (int)Math.Ceiling(((double)count / (request.PageSize ?? blogPostModels.Count + count - 1)))
+                    TotalCount = totalCount,
+                    PageSize = pageSize,
+                    PageNumber = pageNumber,
+                    TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
                 }
             };
 
-            return Task.FromResult(response);
+            return response;
         }
-
     }
 }
