@@ -8,10 +8,6 @@ public class GenericRepository<TEntity> : IRepository<TEntity>
     protected readonly ApplicationDbContext _context;
     protected readonly DbSet<TEntity> _dbSet;
 
-    public GenericRepository(ApplicationDbContext context)
-    {
-        _context = context;
-    }
 
     public GenericRepository(ApplicationDbContext context, DbSet<TEntity> dbSet)
     {

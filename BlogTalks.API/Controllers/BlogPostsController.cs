@@ -30,10 +30,10 @@ namespace BlogTalks.API.Controllers
         // GET: api/<BlogPostsController>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult> Get([FromQuery] int? pageNumber, int? pageSize,string? searchWord,string? tag)
+        public async Task<ActionResult> Get([FromQuery] GetRequest request)
         {
             _logger.LogInformation("Fetching all blog posts");
-            var blogPosts = await _mediator.Send(new GetRequest(pageNumber,pageSize,searchWord,tag));
+            var blogPosts = await _mediator.Send(request);
             return Ok(blogPosts);
         }
 
@@ -44,10 +44,6 @@ namespace BlogTalks.API.Controllers
         {
             _logger.LogInformation("Fetching blog post with ID: {requestId}", request.id);
             var blogPost = await _mediator.Send(request);
-            if (blogPost == null)
-            {
-                return NotFound();
-            }
             return Ok(blogPost);
                        
         }
@@ -59,11 +55,8 @@ namespace BlogTalks.API.Controllers
         public async Task<ActionResult> Add([FromBody] AddRequest request)
         {
             _logger.LogInformation("Adding a new blog post");
-            var blogPosts = await _mediator.Send(request);
-            if (blogPosts == null)
-            {
-                return NotFound();
-            }
+            var blogPosts = await _mediator.Send(request);   
+            
             return Ok(blogPosts);
         
         }
@@ -75,10 +68,6 @@ namespace BlogTalks.API.Controllers
         {
             _logger.LogInformation("Fetching blog post with ID: {id}", id);  
             var blogPosts = await _mediator.Send(new EditRequest(id, request.Title, request.Text, request.Tags));
-            if (blogPosts == null)
-            {
-                return NotFound();
-            }
             return NoContent();
         }
 
@@ -88,11 +77,7 @@ namespace BlogTalks.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             _logger.LogInformation("Deleting blog post with ID: {id}",id);
-            var blogPosts = await _mediator.Send(new DeleteRequest(id));
-            if (blogPosts == null)
-            {
-                return NotFound();
-            }
+            var blogPosts = await _mediator.Send(new DeleteRequest(id));   
             return NoContent();
         }
     }
