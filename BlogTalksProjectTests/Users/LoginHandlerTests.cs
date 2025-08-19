@@ -7,7 +7,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace BlogTalksProjectTests
+namespace BlogTalksProjectTests.Users
 {
     public class LoginHandlerTests
     {

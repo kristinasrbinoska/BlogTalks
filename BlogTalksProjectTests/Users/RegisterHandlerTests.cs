@@ -5,7 +5,7 @@ using Moq;
 using Xunit;
 using FluentAssertions;
 
-namespace BlogTalksProjectTests
+namespace BlogTalksProjectTests.Users
 {
     public class RegisterHandlerTests
     {
