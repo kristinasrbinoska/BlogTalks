@@ -2,13 +2,11 @@
 using BlogTalks.Domain.DTOs;
 using BlogTalks.Domain.Entities;
 using BlogTalks.Domain.Reposotories;
+using BlogTalks.EmailSenderApi.DTO;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Http.Json;
+
 
 namespace BlogTalks.Application.Comments.Comands
 {
@@ -17,12 +15,16 @@ namespace BlogTalks.Application.Comments.Comands
         private readonly ICommentRepository _commentRepository;
         private readonly IBlogPostRepository _blogPostRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IUserRepository _userRepository;
 
-        public AddHandler(ICommentRepository commentRepository, IBlogPostRepository blogPostRepository, IHttpContextAccessor httpContextAccessor)
+        public AddHandler(ICommentRepository commentRepository, IBlogPostRepository blogPostRepository, IHttpContextAccessor httpContextAccessor, IHttpClientFactory httpClientFactory, IUserRepository userRepository)
         {
             _commentRepository = commentRepository;
             _blogPostRepository = blogPostRepository;
             _httpContextAccessor = httpContextAccessor;
+            _httpClientFactory = httpClientFactory;
+            _userRepository = userRepository;
         }
 
         public async Task<AddResponse> Handle(AddRequest request, CancellationToken cancellationToken)
@@ -34,9 +36,9 @@ namespace BlogTalks.Application.Comments.Comands
                 userIdValue = parsedUserId;
             }
             var blogPost = _blogPostRepository.GetById(request.BlogPostId);
-            if(blogPost == null)
+            if (blogPost == null)
             {
-                return null; 
+                return null;
             }
 
             var comment = new Domain.Entities.Comment
@@ -48,9 +50,20 @@ namespace BlogTalks.Application.Comments.Comands
                 BlogPost = blogPost
             };
 
-            
             _commentRepository.Add(comment);
+            var httpClient = _httpClientFactory.CreateClient("EmailSenderApi");
+            var blogpostCreator = _userRepository.GetById(blogPost.CreatedBy);
+            var commentCreator = _userRepository.GetById(userIdValue);
 
+            EmailDTO dto = new EmailDTO
+            {
+                From = commentCreator.Email,
+                To = blogpostCreator.Email,
+                Subject = "New Comment Added",
+                Body = $"A new comment has been added to the blog post '{blogPost.Title}' by user {commentCreator?.Name}."
+            };
+
+            await httpClient.PostAsJsonAsync("/send", dto, cancellationToken);
 
             return new AddResponse(comment.Id);
         }
