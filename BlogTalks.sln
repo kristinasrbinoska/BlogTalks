@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24 d17.14
+VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogTalks.API", "BlogTalks.API\BlogTalks.API.csproj", "{A3C3F769-8AC5-40FB-A211-CA0E82D7D55B}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogTalks.Infrastructure", "BlogTalks.Infrastructure\BlogTalks.Infrastructure.csproj", "{99C3C66C-E80A-4F03-A47C-0EA626EA7A77}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogTalks.Application", "BlogTalks.Application\BlogTalks.Application.csproj", "{47BB625E-93F7-4F2A-AD11-3052D338C6B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogTalksProjectTests", "BlogTalksProjectTests\BlogTalksProjectTests.csproj", "{B2C79F96-9A9F-4DB1-9150-76731CD67F12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{47BB625E-93F7-4F2A-AD11-3052D338C6B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47BB625E-93F7-4F2A-AD11-3052D338C6B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47BB625E-93F7-4F2A-AD11-3052D338C6B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2C79F96-9A9F-4DB1-9150-76731CD67F12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2C79F96-9A9F-4DB1-9150-76731CD67F12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2C79F96-9A9F-4DB1-9150-76731CD67F12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2C79F96-9A9F-4DB1-9150-76731CD67F12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,10 +1,12 @@
 ﻿using BlogTalks.Application.Comments.Queries;
 using BlogTalks.Domain.DTOs;
+using BlogTalks.Domain.Exceptions.BlogTalks.Domain.Exceptions;
 using BlogTalks.Domain.Reposotories;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,7 +26,7 @@ namespace BlogTalks.Application.BlogPosts.Queries
             var blogPost = _blogPostRepository.GetById(request.id);
             if (blogPost == null)
             {
-                return null;
+               throw new BlogTalksException($"Blog post with Id {request.id} not found.", HttpStatusCode.NotFound);
             }
             return Task.FromResult(new GetByIdResponse
             {

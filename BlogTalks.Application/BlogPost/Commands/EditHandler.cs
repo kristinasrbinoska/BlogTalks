@@ -1,11 +1,13 @@
 ﻿using BlogTalks.Application.Comments.Queries;
 using BlogTalks.Domain.DTOs;
+using BlogTalks.Domain.Exceptions.BlogTalks.Domain.Exceptions;
 using BlogTalks.Domain.Reposotories;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,18 +31,18 @@ namespace BlogTalks.Application.BlogPosts.Commands
 
             if (blogPost == null)
             {
-                return null;
+                throw new BlogTalksException($"Blog post with Id {request.Id} not found.", HttpStatusCode.NotFound);
             }
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("userId")?.Value;
             if (!int.TryParse(userIdClaim, out int currentUserId))
             {
-                return null;
+                throw new BlogTalksException("User not have correct access rights.", HttpStatusCode.Unauthorized);
             }
 
            
             if (blogPost.CreatedBy != currentUserId)
             {
-                return null;
+                throw new BlogTalksException("You are not the author of this blog post.", HttpStatusCode.Forbidden);
             }
             blogPost.Title = request.Title;
             blogPost.Text = request.Text;

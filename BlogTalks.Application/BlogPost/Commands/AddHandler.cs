@@ -39,7 +39,7 @@ namespace BlogTalks.Application.BlogPosts.Commands
                 
             };
 
-             _blogPostRepository.Add(blogPost);
+            _blogPostRepository.Add(blogPost);
 
             return new AddResponse(blogPost.Id);
         }

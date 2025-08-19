@@ -2,12 +2,14 @@
 using BlogTalks.Domain.Reposotories;
 using BlogTalks.Infrastructure.Data.DataContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Linq;
 
 namespace BlogTalks.Infrastructure.Repositories
 {
     public class BlogPostRepository : GenericRepository<BlogPost>, IBlogPostRepository
     {
-        public BlogPostRepository(ApplicationDbContext context) : base(context) { }
+        public BlogPostRepository(ApplicationDbContext context) : base(context,context.BlogPosts) { }
 
         public BlogPost? GetBlogPostByName(string name)
         {
@@ -28,7 +30,9 @@ namespace BlogTalks.Infrastructure.Repositories
             var query = _context.BlogPosts.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchWord))
-                query = query.Where(bp => bp.Title.Contains(searchWord) || bp.Text.Contains(searchWord));
+                query = query.Where(bp =>
+                    bp.Title.Contains(searchWord, StringComparison.OrdinalIgnoreCase) ||
+                    bp.Text.Contains(searchWord, StringComparison.OrdinalIgnoreCase));
 
             if (!string.IsNullOrWhiteSpace(tag))
                 query = query.Where(bp => bp.Tags.Contains(tag));
