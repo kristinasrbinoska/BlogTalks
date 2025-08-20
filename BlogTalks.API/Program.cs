@@ -54,6 +54,11 @@ builder.Services.AddSwaggerGen(options =>
 }
 });
 });
+builder.Services.AddHttpClient("EmailSenderApi", client =>
+{
+    var config = builder.Configuration.GetSection("Services:EmailSenderApi");
+    client.BaseAddress = new Uri(config["Url"]);
+});
 
 
 
