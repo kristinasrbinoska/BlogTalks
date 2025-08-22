@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BlogTalks.EmailSenderApi\BlogTalks.EmailSenderApi.csproj" />
+  </ItemGroup>
+
 </Project>

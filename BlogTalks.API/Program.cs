@@ -7,9 +7,11 @@ using BlogTalks.Application.Comments.Queries;
 using BlogTalks.Domain.DTOs;
 using BlogTalks.Infrastructure;
 using BlogTalks.Infrastructure.Atuhenticatin;
+using BlogTalks.Infrastructure.Messaging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -59,6 +61,9 @@ builder.Services.AddHttpClient("EmailSenderApi", client =>
     var config = builder.Configuration.GetSection("Services:EmailSenderApi");
     client.BaseAddress = new Uri(config["Url"]);
 });
+builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
+
+builder.Services.AddFeatureManagement();
 
 
 
