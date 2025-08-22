@@ -1,5 +1,6 @@
 using BlogTalks.EmailSenderApi.DTO;
 using BlogTalks.EmailSenderApi.Services;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
+builder.Services.Configure<RabbitMQSettingseEmailSender>(builder.Configuration.GetSection("RabbitMQSettings"));
+builder.Services.AddSingleton(builder.Configuration
+    .GetSection("RabbitMQSettings")
+    .Get<RabbitMQSettingseEmailSender>());
 
 var app = builder.Build();
 
