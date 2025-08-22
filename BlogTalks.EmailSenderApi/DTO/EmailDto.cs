@@ -1,4 +1,6 @@
-﻿namespace BlogTalks.EmailSenderApi.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BlogTalks.EmailSenderApi.DTO
 {
     public class EmailDTO
     {
