@@ -12,11 +12,13 @@ builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddHostedService<RabbitMQBackgroundConsumerService>();
 
-builder.Services.Configure<RabbitMQSettingseEmailSender>(builder.Configuration.GetSection("RabbitMQSettings"));
+builder.Services.Configure<RabbitMQSettingseEmailSender>(builder.Configuration.GetSection("RabbitMQ"));
 builder.Services.AddSingleton(builder.Configuration
-    .GetSection("RabbitMQSettings")
+    .GetSection("RabbitMQ")
     .Get<RabbitMQSettingseEmailSender>());
+
 
 var app = builder.Build();
 
