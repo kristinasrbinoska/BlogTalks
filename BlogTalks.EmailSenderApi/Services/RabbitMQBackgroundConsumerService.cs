@@ -15,21 +15,18 @@ namespace BlogTalks.EmailSenderApi.Services
         private readonly RabbitMQSettingseEmailSender _rabbitMQSettings;
         private IConnection _connection;
         private IChannel _channel;
-        private readonly IEmailSender _emailSender;
 
-        public RabbitMQBackgroundConsumerService(IServiceScopeFactory serviceScopeFactory, RabbitMQSettingseEmailSender rabbitMQSettings, IEmailSender emailSender)
+        public RabbitMQBackgroundConsumerService(IServiceScopeFactory serviceScopeFactory, RabbitMQSettingseEmailSender rabbitMQSettings)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _rabbitMQSettings = rabbitMQSettings;
-            _emailSender = emailSender;
-            InitRabbitMQ();
         }
 
-        private async void InitRabbitMQ()
+        private async Task InitRabbitMQ()
         {
             var factory = new ConnectionFactory
             {
-                HostName = _rabbitMQSettings.RabbitURL,
+                HostName = _rabbitMQSettings.Hostname,
                 UserName = _rabbitMQSettings.Username,
                 Password = _rabbitMQSettings.Password
             };
@@ -47,15 +44,22 @@ namespace BlogTalks.EmailSenderApi.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            stoppingToken.ThrowIfCancellationRequested();
+
+            stoppingToken.ThrowIfCancellationRequested(); 
+            
+            await InitRabbitMQ();
 
             var consumer = new AsyncEventingBasicConsumer(_channel);
             consumer.ReceivedAsync += async (ch, ea) =>
             {
+
+                using var scope = _serviceScopeFactory.CreateScope();
+                var _emailSender = scope.ServiceProvider.GetRequiredService<IEmailSender>();
                 var message = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var emailDto = JsonConvert.DeserializeObject<EmailDTO>(message);
 
                 await _emailSender.Send(emailDto);
+
                 await _channel.BasicAckAsync(ea.DeliveryTag, false);
             };
 
